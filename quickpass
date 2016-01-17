@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# Quick way to generate a random password for online systems
+#
+# Usage: randompass -l [LENGTH] -n [QUANTITY], where:
+# length - the desired length of the password
+# quantity - the number of passwords to be generated (default: 1) 
+#
+#    Copyright (C) 2016 - kzimmermann <https://quitter.se/kzimmermann>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+# Create a single password by default:
+HOW_MANY=1
+
+# Some online services put a cap on how long a password can be. We default it
+# to 32 characters, but you can change it accordingly. If you estipulate a 
+# number as an argument to this program, this value is overriden
+# It's not recommended to use a password that's shorter than 14 characters!
+LENGTH=32
+
+# Get command-line options:
+
+while [[ -n "$1" ]]
+do
+    case "$1" in
+        "-h" | "--help" )
+        cat <<EOF
+Quick way to generate a random throwaway password for online systems
+
+Usage: $(basename $0) -l [LENGTH] -n [QUANTITY], where:
+length - the desired length of the password (default: $LENGTH)
+quantity - the number of passwords to be generated (default: $HOW_MANY) 
+EOF
+        exit 0
+        ;;
+        "-l" | "--length" ) 
+            shift
+            LENGTH="$1"
+        ;;
+        "-n" | "--number" )
+            shift
+            HOW_MANY="$1"
+        ;;
+        * ) 
+            echo "Error: unrecognized option '$1'"
+            exit 1
+        ;;
+    esac
+
+    # call next round
+    shift
+done
+
+for i in $(seq 1 $HOW_MANY)
+do
+    seed=$(dd if=/dev/urandom bs=256 count=1 2> /dev/null | base64 -w 0)
+    index=${RANDOM:2:2}
+    if [[ ${index:0:1} == "0" ]]
+    then
+        index=${index:1:1} # need to do this to avoid things like 09, 04, etc
+    fi
+    password=${seed:$index:$LENGTH}
+
+    echo $password
+done

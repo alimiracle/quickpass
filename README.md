@@ -4,17 +4,34 @@ With **quickpass**, you can quickly and easily generate strong passwords from th
 
 To generate a single, 32-character random password, just type:
 
-    ./quickpass
+    $ ./quickpass
+    /HXVWs0V2VDLjL1vqGfjt+f9/tIV58Kp
 
 To generate a random password specifically with 42 characters in length, type:
 
-    ./quickpass -l 42
+    $ ./quickpass -l 42
+    ntXAiKHw/kSAx9RijAnCTaIX/UWNSh4Xwf7a5cxa4T
 
-To generate a list of fifteen random passwords, type:
+To generate a list of seven random passwords, type:
 
-    ./quickpass -n 15
+    $ ./quickpass -n 7
+    ullAMvKLfIAUAGy27asukQj6R/BQumbM
+    28YFL1J7r3qvk5ZmAIPufVNPIzDK+0rJ
+    brl4O/vET75zOdNo5dUHFbQt3iZEziZX
+    HcYzer/gbpiEVJbWJgGpHSeEjPcMF4/j
+    q8vxe59xfV6zVX2rbrEXrbOJIMrgGUnG
+    UxhaeU+UDNjgFZ5QwfzqfArgVaXNat9S
+    B0/cZVWC8s7TswgP38AyvJJfX+jZ7U0S
 
-You can use these two options in any combination to suit your needs.
+
+You can use these two options in any combination to suit your needs:
+
+    $ ./quickpass -n 4 -l 40
+    a5OdzGsYhhaoYU889dds72kYpNMJyAzWRrZxe5Yv
+    YR3dpnyrwLxNS9Ccu8POqRUU4K3UcoVA6DMkH9dx
+    3NlV+7jpEFiKM9CtQAEJVfJS6AKP9AfEHrHDvK/R
+    nUU05Y1tqn6NdJhT/sS4y6Joz1m8fvwcYGOOHUu5
+
 
 # Technical explanation and a note about security #
 

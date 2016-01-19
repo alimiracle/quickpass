@@ -67,12 +67,10 @@ done
 
 for i in $(seq 1 $HOW_MANY)
 do
-    seed=$(dd if=/dev/urandom bs=256 count=1 2> /dev/null | base64 -w 0)
+    seed="$(dd if=/dev/urandom bs=512 count=1 2> /dev/null | tr -dc [:graph:])"
     index=${RANDOM:2:2}
-    if [[ ${index:0:1} == "0" ]]
-    then
-        index=${index:1:1} # need to do this to avoid things like 09, 04, etc
-    fi
+    # need to do this to avoid things like 09, 04, etc
+    [[ ${index:0:1} == "0" ]] && index=${index:1:1} 
     password=${seed:$index:$LENGTH}
 
     echo $password

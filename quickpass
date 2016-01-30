@@ -65,11 +65,11 @@ EOF
     shift
 done
 
-for i in $(seq 1 $HOW_MANY)
+for ((i=0; i < $HOW_MANY; i++))
 do
     seed="$(dd if=/dev/urandom bs=512 count=1 2> /dev/null | tr -dc [:graph:])"
     index=${RANDOM:2:2}
-    # need to do this to avoid things like 09, 04, etc
+    # I need to do this to avoid things like 09, 04, etc
     [[ ${index:0:1} == "0" ]] && index=${index:1:1} 
     password=${seed:$index:$LENGTH}
 

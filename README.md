@@ -55,5 +55,6 @@ Remember, however, that for some weird reason a few online services put a cap on
 
  - v0.1 - first usable version: uses `base64` to produce printable characters
  - v0.2 - from a suggestion by [@cmd](https://diasporabr.com.br/people/b1b87950852001325d4e4860008dbc6c) it now uses `tr` to produce all printable ASCII characters for a much stronger password!
+ - v0.3 - from a suggestion by [@muja](https://notabug.org/muja) the script now uses the xsel command (if available) to copy the password to the clipboard instead of printing it out.
 
 

@@ -73,5 +73,11 @@ do
     [[ ${index:0:1} == "0" ]] && index=${index:1:1} 
     password=${seed:$index:$LENGTH}
 
-    echo $password
+    if [[ -f /usr/bin/xsel ]]; then
+        echo "$password" | xsel -ib
+        echo "Password copied to the clipboard."
+        break
+    else
+        echo $password
+    fi
 done

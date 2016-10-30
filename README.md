@@ -5,31 +5,24 @@ With **quickpass**, you can quickly and easily generate strong passwords from th
 To generate a single, 32-character random password, just type:
 
     $ ./quickpass
-    !RM*U<AN#YI:%yQiR<L<:&q+?:Luq@6'
+    # Password gets copied to clipboard e.g.: !RM*U<AN#YI:%yQiR<L<:&q+?:Luq@6'
 
 To generate a random password specifically with 42 characters in length, type:
 
     $ ./quickpass -l 42
-    Y{@u&EzY\,@SOi^w,0r=gTr3V_-H|3Hk=)9g!aRfJL
+    # Password gets copied to clipboard, e.g.: Y{@u&EzY\,@SOi^w,0r=gTr3V_-H|3Hk=)9g!aRfJL
 
-To generate a list of five random passwords, type:
+If you want to use `quickpass` to create passwords on-the-fly along another script, pass the `-p` flag, which forces the script to print the output to stdout, where you can pipe or store it as needed:
 
-    $ ./quickpass -n 5
-    G4'PEknI+A\g%fjPG\BNuH&=zlC5(W^9
-    X[:8E&Q`(hH\%(lf96Ye8"6x|KMR[E}+
-    Nt/0dP`UY2sZppNcqK?=]p9)3m?$t$|+
-    g^!{]Q_1TjnLcLGYJ_Ddhp&h&"Er,*XS
-    2oe}$P_L-6<XvA@%{Tc[f|ORyRWf&6wR
-
-
-You can use these two options in any combination to suit your needs:
-
-    $ ./quickpass -n 4 -l 40
-    >RYK`+2HTpY-`.~2Q"/#b$S'p[oxdVH$Je[ke:Mo
-    !H!9H|odnqKVL;t#-;?4"qURXGn)jPtsX>tBAE~+
-    )p(BYr6UE,Y!2y0lt{lEnUUS,=Tz+wqPK1rwr83S
-    @3)[Rv3fu)Ng<uqz5n.t!d798{G(;d..XVk[}C66
-
+    # naive usage, prints to terminal where everyone can read
+    $ ./quickpass -p
+    PG=6>%^v$5,Tb3Es"'v+_b"d63@dn'`;
+    
+    # encrypt the password as soon as you generate it:
+    $ ./quickpass -l 40 -p | gpg --armor --encrypt -r somebody@example.com
+    
+    # store the password in a variable in memory:
+    $ key=$(./quickpass -p)
 
 # Technical explanation and a note about security #
 
@@ -38,6 +31,12 @@ You can use these two options in any combination to suit your needs:
 The reliability of this script lays mostly on the quality of the randomness obtained from the `urandom` file: it should be noted that, despite its name, it's actually a *pseudorandom* generator (although it samples hardware noise to compensate). 
 
 This means that from a strict security standpoint, this is **not** a true random generator, although it's pretty good regardless. OpenSSL certs and PGP keys are also generated using those bits, so I guess it should be pretty reliable.
+
+Finally, remember that this is **not** a password *manager* - i.e. no support for securely storing and retrieving the random password. You could do something like this to produce a plausibly-deniable zero-knowledge storage that you can read later on:
+
+    $ ./quickpass -p | gpg --armor --encrypt -r yourkey@example.com > password.asc
+
+Remember, though, that I'm not a security expert and therefore this implementation could have its own weaknesses as well.
 
 ## Entropy analysis and password strength ##
 
@@ -56,5 +55,5 @@ Remember, however, that for some weird reason a few online services put a cap on
  - v0.1 - first usable version: uses `base64` to produce printable characters
  - v0.2 - from a suggestion by [@cmd](https://diasporabr.com.br/people/b1b87950852001325d4e4860008dbc6c) it now uses `tr` to produce all printable ASCII characters for a much stronger password!
  - v0.3 - from a suggestion by [@muja](https://notabug.org/muja) the script now uses the xsel command (if available) to copy the password to the clipboard instead of printing it out.
-
+ - v0.4 - enabled the `-p` flag which overrides the copying to clipboard. `quickpass` should be much more useful to deploy in shell scripts now. Also, password list creation has been removed, since passwords gets piped away from stdout by default.
 

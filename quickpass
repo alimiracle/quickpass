@@ -2,9 +2,17 @@
 #
 # Quick way to generate a random password for online systems
 #
-# Usage: randompass -l [LENGTH] -n [QUANTITY], where:
+# Usage: quickpass -l [LENGTH], where:
 # length - the desired length of the password
-# quantity - the number of passwords to be generated (default: 1) 
+#
+# FIXME:
+# because of the way `printf' is implemented (at least in bash), there's a 
+# pitfall when sampling the backslash '\' character: we cannot ignore it.
+# Either we interpret it and risk breaking the line when copying to xsel or we
+# forcefully escape it together with every other shell character, thus 
+# lengthening the passwords unpredictably. I chose the former.
+#
+# License information:
 #
 #    Copyright (C) 2016 - kzimmermann <https://quitter.se/kzimmermann>
 #
@@ -28,6 +36,10 @@
 # It's not recommended to use a password that's shorter than 14 characters!
 LENGTH=32
 
+# Do we want to use quickpass as part of a script? If so, print the password to
+# stdout, where it can be piped to variable or file. Pass -p to enable it.
+FORCE_PRINT=false
+
 # Get command-line options:
 
 while [[ -n "$1" ]]
@@ -37,14 +49,19 @@ do
         cat <<EOF
 Quick way to generate a random throwaway password for online systems
 
-Usage: $(basename $0) -l [LENGTH], where:
-length - the desired length of the password (default: $LENGTH)
+Usage: $(basename $0) -l LENGTH -p, where:
+-l: make a password of the desired LENGTH (default: $LENGTH)
+-p: print final password to stdout (useful in shell scripts)
+
 EOF
         exit 0
         ;;
         "-l" | "--length" ) 
             shift
             LENGTH="$1"
+        ;;
+        "-p" | "--print" )
+            FORCE_PRINT=true
         ;;
         * ) 
             echo "Error: unrecognized option '$1'"
@@ -62,9 +79,14 @@ index=${RANDOM:2:2}
 [[ ${index:0:1} == "0" ]] && index=${index:1:1} 
 password=${seed:$index:$LENGTH}
 
+if [[ $FORCE_PRINT == true ]]
+then
+    echo $password
+    exit 0
+fi
 if [[ -f /usr/bin/xsel ]]; then
-    printf "$password" | xsel -ib
-    printf "$password" | xsel -i
+    printf %b ${password} | xsel -ib
+    printf %b ${password} | xsel -i
     echo "Password copied to the clipboard."
 else
     echo $password
